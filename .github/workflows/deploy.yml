@@ -1,1 +1,39 @@
+name: Deploy to VPS
 
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Deploy to server
+        run: |
+          ssh deployer@<your-vps-ip> <<'EOF'
+            mkdir -p /opt/successscienceacademy.com
+            cd /opt/successscienceacademy.com
+            # GitHub repo files copied over via rsync
+          EOF
+
+      - name: Sync project files
+        run: |
+          rsync -avz --delete ./ deployer@<your-vps-ip>:/opt/successscienceacademy.com/
+
+      - name: Build and start Docker container
+        run: |
+          ssh deployer@<your-vps-ip> <<'EOF'
+            cd /opt/successscienceacademy.com
+            docker compose down
+            docker compose up -d --build
+          EOF
