@@ -20,7 +20,7 @@ jobs:
 
       - name: Deploy to server
         run: |
-          ssh deployer@{{ secrets.VPS_IP }} <<'EOF'
+          ssh deployer@${{ secrets.VPS_IP }} <<'EOF'
             mkdir -p /opt/successscienceacademy.com
             cd /opt/successscienceacademy.com
           EOF
