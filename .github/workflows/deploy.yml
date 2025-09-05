@@ -1,4 +1,4 @@
-name: Deploy to VPS
+name: Deploy to VPS on release branch
 
 on:
   push:
@@ -13,31 +13,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up SSH
+      - name: Setup SSH agent
         uses: webfactory/ssh-agent@v0.7.0
         with:
           ssh-private-key: ${{ secrets.DEPLOY_KEY }}
-          
-      - name: Add VPS to known_hosts
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan -H ${{ secrets.VPS_IP }} >> ~/.ssh/known_hosts
-      
-      - name: Deploy to server
-        run: |
-          ssh deployer@${{ secrets.VPS_IP }} <<'EOF'
-            mkdir -p /home/deployer/successscienceacademy.com
-            cd /home/deployer/successscienceacademy.com
-            git fetch origin release
-            git reset --hard origin/release
-            docker compose pull
-            docker compose up -d --build
-          EOF
 
-      - name: Build and start Docker container
+      - name: Sync files to VPS using rsync
         run: |
-          ssh deployer@${{ secrets.VPS_IP }} <<'EOF'
-            cd /home/deployer/successscienceacademy.com
-            docker compose down
-            docker compose up -d --build
+          rsync -avz --delete ./ deployer@${{ secrets.VPS_IP }}:/home/deployer/ssa-website/
+        env:
+          RSYNC_RSH: ssh
+
+      - name: SSH into VPS and restart containers
+        run: |
+          ssh deployer@ ${{ secrets.VPS_IP }} << 'EOF'
+            cd /home/deployer/ssa-website/
+            docker-compose pull
+            docker-compose up -d --build
           EOF
