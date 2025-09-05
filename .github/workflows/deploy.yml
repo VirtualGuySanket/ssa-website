@@ -26,18 +26,18 @@ jobs:
       - name: Deploy to server
         run: |
           ssh deployer@${{ secrets.VPS_IP }} <<'EOF'
-            mkdir -p /opt/successscienceacademy.com
-            cd /opt/successscienceacademy.com
+            mkdir -p /home/deployer/successscienceacademy.com
+            cd /home/deployer/successscienceacademy.com
+            git fetch origin release
+            git reset --hard origin/release
+            docker-compose pull
+            docker-compose up -d --build
           EOF
-
-      - name: Sync project files
-        run: |
-          rsync -avz --delete ./ deployer@<your-vps-ip>:/opt/successscienceacademy.com/
 
       - name: Build and start Docker container
         run: |
           ssh deployer@<your-vps-ip> <<'EOF'
-            cd /opt/successscienceacademy.com
+            cd /home/deployer/successscienceacademy.com
             docker compose down
             docker compose up -d --build
           EOF
