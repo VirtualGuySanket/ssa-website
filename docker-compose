@@ -2,11 +2,11 @@ version: '3'
 services:
   static-site:
     build: .
-    container_name: static-site
+    container_name: success-science-app
     environment:
-      VIRTUAL_HOST: example.com
-      LETSENCRYPT_HOST: example.com
-      LETSENCRYPT_EMAIL: your@email.com
+      VIRTUAL_HOST: successscienceacademy.com
+      LETSENCRYPT_HOST: successscienceacademy.com
+      LETSENCRYPT_EMAIL: youremail@example.com
     expose:
       - "80"
     restart: always
