@@ -30,8 +30,8 @@ jobs:
             cd /home/deployer/successscienceacademy.com
             git fetch origin release
             git reset --hard origin/release
-            docker-compose pull
-            docker-compose up -d --build
+            docker compose pull
+            docker compose up -d --build
           EOF
 
       - name: Build and start Docker container
