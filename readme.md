@@ -22,9 +22,11 @@ your-static-site-repo/
 └── .github/
     └── workflows/
         └── deploy.yml   # GitHub Actions
-📄 Dockerfile
-dockerfile
-Copy code
+```
+
+## Dockerfile
+
+```dockerfile
 FROM nginx:alpine
 COPY ./app /usr/share/nginx/html
 EXPOSE 80
@@ -43,6 +45,7 @@ services:
     expose:
       - "80"
     restart: always
+```
 🔁 Reverse Proxy Setup (on VPS)
 Run these steps as the deployer user.
 
