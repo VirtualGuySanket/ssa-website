@@ -20,10 +20,9 @@ jobs:
 
       - name: Deploy to server
         run: |
-          ssh deployer@<your-vps-ip> <<'EOF'
+          ssh deployer@{{ secrets.VPS_IP }} <<'EOF'
             mkdir -p /opt/successscienceacademy.com
             cd /opt/successscienceacademy.com
-            # GitHub repo files copied over via rsync
           EOF
 
       - name: Sync project files
